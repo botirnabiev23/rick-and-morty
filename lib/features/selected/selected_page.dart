@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/features/character/presentation/bloc/character_bloc.dart';
@@ -69,7 +70,7 @@ class _SelectedPageState extends State<SelectedPage> {
 
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(character.image),
+                    backgroundImage: CachedNetworkImageProvider(character.image),
                   ),
                   title: Text(character.name),
                   subtitle: Text('${character.species} — ${character.status}'),

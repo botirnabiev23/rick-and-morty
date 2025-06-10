@@ -29,7 +29,6 @@ class AppDatabase extends _$AppDatabase {
       (select(characters)..where((tbl) => tbl.isFavorite.equals(true))).get();
 
   Future<void> toggleFavorite(int id, bool isFav) async {
-    print('[DB] Updating isFavorite=$isFav for id=$id');
     await (update(characters)..where((tbl) => tbl.id.equals(id))).write(
       CharactersCompanion(isFavorite: Value(isFav)),
     );

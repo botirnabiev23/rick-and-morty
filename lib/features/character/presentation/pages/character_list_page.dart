@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/character_bloc.dart';
@@ -79,13 +80,10 @@ class _CharacterListPageState extends State<CharacterListPage> {
 
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundImage:
-                          character.image.isNotEmpty
-                              ? NetworkImage(character.image)
-                              : const AssetImage(
-                                    'assets/images/default_avatar.png',
-                                  )
-                                  as ImageProvider,
+                      backgroundImage: character.image.isNotEmpty
+                          ? CachedNetworkImageProvider(character.image)
+                          : const AssetImage('assets/images/default_avatar.png')
+                      as ImageProvider,
                     ),
                     title: Text(character.name),
                     subtitle: Text(character.status),
