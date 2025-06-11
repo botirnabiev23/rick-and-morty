@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rick_and_morty/core/theme/my_colors.dart';
 import 'package:rick_and_morty/features/main/widgets/bottom_bar_item_widget.dart';
 
 class MainPage extends StatefulWidget {
@@ -38,31 +39,33 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: widget.navigationShell,
       bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
+        data: theme.copyWith(
           splashFactory: NoSplash.splashFactory,
           highlightColor: Colors.transparent,
         ),
         child: BottomNavigationBar(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.extension<MyColors>()?.cardBackground,
           elevation: 0,
           currentIndex: _selectedIndex,
           onTap: _onTap,
           selectedFontSize: 10,
           unselectedFontSize: 10,
-          selectedItemColor: const Color(0xff0ABAB5),
-          unselectedItemColor: const Color(0xff8B9099).withOpacity(0.7),
-          selectedLabelStyle: const TextStyle(
+          selectedItemColor: theme.colorScheme.primary,
+          unselectedItemColor: theme.hintColor,
+          selectedLabelStyle: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w500,
-            color: Color(0xff0ABAB5),
+            color: theme.colorScheme.primary,
           ),
           unselectedLabelStyle: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w500,
-            color: const Color(0xff8B9099).withOpacity(0.7),
+            color: theme.hintColor,
           ),
           items: [
             BottomNavigationBarItem(
@@ -76,8 +79,7 @@ class _MainPageState extends State<MainPage> {
             BottomNavigationBarItem(
               icon: CustomBottomNavIcon(
                 icon: Icons.star,
-                isSelected:
-                _selectedIndex == BottomNavigationItem.selected.index,
+                isSelected: _selectedIndex == BottomNavigationItem.selected.index,
                 padding: const EdgeInsets.only(bottom: 6, top: 8),
               ),
               label: 'Selected',

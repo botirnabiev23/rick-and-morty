@@ -7,10 +7,11 @@ import 'package:path_provider/path_provider.dart';
 
 // Импортируй файл с таблицей, в котором класс называется Characters
 import 'package:rick_and_morty/db/tables/character_table.dart';
+import 'package:rick_and_morty/db/tables/settings_table.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [Characters])
+@DriftDatabase(tables: [Characters, Settings])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -32,6 +33,17 @@ class AppDatabase extends _$AppDatabase {
     await (update(characters)..where((tbl) => tbl.id.equals(id))).write(
       CharactersCompanion(isFavorite: Value(isFav)),
     );
+  }
+
+  Future<void> saveTheme(String themeMode) async {
+    await into(settings).insertOnConflictUpdate(
+      SettingsCompanion.insert(key: 'theme', value: themeMode),
+    );
+  }
+
+  Future<String?> getSavedTheme() async {
+    final result = await (select(settings)..where((tbl) => tbl.key.equals('theme'))).getSingleOrNull();
+    return result?.value;
   }
 }
 

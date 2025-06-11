@@ -1,33 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:rick_and_morty/router/app_router.dart';
-import 'core/di/injection.dart';
+import 'package:provider/provider.dart';
+import 'package:rick_and_morty/core/di/injection.dart';
+import 'package:rick_and_morty/core/theme/theme_notifier.dart';
+import 'package:rick_and_morty/db/app_database.dart';
+import 'package:rick_and_morty/features/widgets/theme_switcher.dart';
+import 'core/theme/themes.dart';
+import 'router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await configureDependencies();
-  runApp(MyApp());
+  final db = getIt<AppDatabase>();
+  final savedTheme = await db.getSavedTheme();
+
+  final initialThemeMode =
+      savedTheme == 'dark' ? ThemeMode.dark : ThemeMode.light;
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeNotifier(initialThemeMode, db),
+      child: MyApp(database: db, initialThemeMode: initialThemeMode),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AppDatabase database;
+  final ThemeMode initialThemeMode;
+
+  const MyApp({
+    super.key,
+    required this.database,
+    required this.initialThemeMode,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = context.watch<ThemeNotifier>();
+
     return MaterialApp.router(
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(color: Colors.black),
-        ),
-        colorScheme: ColorScheme.light(
-          primary: Colors.black,
-          onPrimary: Colors.white,
-        ),
-      ),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: themeNotifier.themeMode,
       routerConfig: router,
+      builder: (context, child) {
+        if (child != null) {
+          return ThemeSwitcher(child: child);
+        }
+        return const SizedBox();
+      },
     );
   }
 }
