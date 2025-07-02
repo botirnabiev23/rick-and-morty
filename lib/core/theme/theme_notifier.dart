@@ -9,13 +9,19 @@ class ThemeNotifier extends ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
 
-  void toggleTheme() async {
-    _themeMode =
-    _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+  Future<void> toggleTheme() async {
+    try {
+      final newThemeMode =
+          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
 
-    await db.saveTheme(_themeMode == ThemeMode.dark ? 'dark' : 'light');
-    notifyListeners();
+      await db.saveTheme(newThemeMode == ThemeMode.dark ? 'dark' : 'light');
+      _themeMode = newThemeMode;
+      notifyListeners();
+    } catch (e) {
+      // Log error or handle it appropriately
+      debugPrint('Error toggling theme: $e');
+      // Optionally rethrow if you want to handle it at a higher level
+      // rethrow;
+    }
   }
 }
-
-

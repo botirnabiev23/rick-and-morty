@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rick_and_morty/core/errors/failure.dart';
-import '../../domain/entities/character_entity.dart';
 import '../../domain/repositories/character_repository.dart';
 
 @injectable
@@ -21,4 +20,3 @@ class ToggleFavoriteCharacterUseCase {
     }
   }
 }
-

@@ -10,19 +10,31 @@ import 'router/app_router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await configureDependencies();
-  final db = getIt<AppDatabase>();
-  final savedTheme = await db.getSavedTheme();
+  try {
+    await configureDependencies();
+    final db = getIt<AppDatabase>();
+    final savedTheme = await db.getSavedTheme();
 
-  final initialThemeMode =
-      savedTheme == 'dark' ? ThemeMode.dark : ThemeMode.light;
+    final initialThemeMode =
+        savedTheme == 'dark' ? ThemeMode.dark : ThemeMode.light;
 
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeNotifier(initialThemeMode, db),
-      child: MyApp(database: db, initialThemeMode: initialThemeMode),
-    ),
-  );
+    runApp(
+      ChangeNotifierProvider(
+        create: (_) => ThemeNotifier(initialThemeMode, db),
+        child: MyApp(database: db, initialThemeMode: initialThemeMode),
+      ),
+    );
+  } catch (e) {
+    runApp(
+      ChangeNotifierProvider(
+        create: (_) => ThemeNotifier(ThemeMode.light, getIt<AppDatabase>()),
+        child: MyApp(
+          database: getIt<AppDatabase>(),
+          initialThemeMode: ThemeMode.light,
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
